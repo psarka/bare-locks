@@ -13,18 +13,21 @@ class FcntlMechanism(FileLockingMechanism):
     """
     A file locking mechanism based on fcntl.
     """
+
     available = fcntl is not None
     can_share = True
     can_block = True
     can_switch = True
 
     @staticmethod
-    def lock(handle,
-             exclusive: bool = True,
-             blocking: bool = False,
-             offset: int = 0,
-             length: int = 0,
-             relative_to: RelativeTo = 'start') -> bool:
+    def lock(
+        handle,
+        exclusive: bool = True,
+        blocking: bool = False,
+        offset: int = 0,
+        length: int = 0,
+        relative_to: RelativeTo = "start",
+    ) -> bool:
         """Acquire a lock on the byte range of the file.
 
         The byte range is computed as
@@ -74,15 +77,17 @@ class FcntlMechanism(FileLockingMechanism):
         if not blocking:
             flags |= fcntl.LOCK_NB
 
-        if relative_to == 'start':
+        if relative_to == "start":
             whence = 0
-        elif relative_to == 'current':
+        elif relative_to == "current":
             whence = 1
-        elif relative_to == 'end':
+        elif relative_to == "end":
             whence = 2
         else:
-            raise ValueError(f"relative_to should be 'start', 'current', or 'end', "
-                             f"received {relative_to}!")
+            raise ValueError(
+                f"relative_to should be 'start', 'current', or 'end', "
+                f"received {relative_to}!"
+            )
 
         try:
             fcntl.lockf(handle, flags, length, offset, whence)
@@ -94,10 +99,9 @@ class FcntlMechanism(FileLockingMechanism):
                 raise e
 
     @staticmethod
-    def unlock(handle,
-               offset: int = 0,
-               length: int = 0,
-               relative_to: RelativeTo = 'start'):
+    def unlock(
+        handle, offset: int = 0, length: int = 0, relative_to: RelativeTo = "start"
+    ):
         """Release a lock on the byte range of the file.
 
         The byte range is computed as
@@ -127,14 +131,16 @@ class FcntlMechanism(FileLockingMechanism):
             Can be either 'start' of the file, 'current' position or 'end' of
             the file. (default='start')
         """
-        if relative_to == 'start':
+        if relative_to == "start":
             whence = 0
-        elif relative_to == 'current':
+        elif relative_to == "current":
             whence = 1
-        elif relative_to == 'end':
+        elif relative_to == "end":
             whence = 2
         else:
-            raise ValueError(f"relative_to should be 'start', 'current', or 'end', "
-                             f"received {relative_to}!")
+            raise ValueError(
+                f"relative_to should be 'start', 'current', or 'end', "
+                f"received {relative_to}!"
+            )
 
         fcntl.lockf(handle, fcntl.LOCK_UN, length, offset, whence)

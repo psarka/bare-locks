@@ -11,22 +11,22 @@ from ctypes.wintypes import HANDLE
 
 class DummyStruct(Structure):
     _fields_ = [
-        ('Offset', DWORD),
-        ('OffsetHigh', DWORD),
+        ("Offset", DWORD),
+        ("OffsetHigh", DWORD),
     ]
 
 
 class DummyUnion(Union):
     _fields_ = [
-        ('_offsets', DummyStruct),
-        ('Pointer', c_void_p),
+        ("_offsets", DummyStruct),
+        ("Pointer", c_void_p),
     ]
 
 
 class OVERLAPPED(Structure):
     _fields_ = [
-        ('Internal', c_void_p),
-        ('InternalHigh', c_void_p),
-        ('_offset_or_ptr', DummyUnion),
-        ('hEvent', HANDLE),
+        ("Internal", c_void_p),
+        ("InternalHigh", c_void_p),
+        ("_offset_or_ptr", DummyUnion),
+        ("hEvent", HANDLE),
     ]

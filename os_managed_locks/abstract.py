@@ -8,6 +8,7 @@ extensions.
 These mechanisms can be used on their own or can be further wrapped on top to
 produce a syntactically sweeter locks.
 """
+
 import abc
 
 from os_managed_locks.typing.literal import Literal
@@ -63,4 +64,4 @@ class FileLockingMechanism(abc.ABC):
         """
 
 
-RelativeTo = Literal['start', 'current', 'end']
+RelativeTo = Literal["start", "current", "end"]

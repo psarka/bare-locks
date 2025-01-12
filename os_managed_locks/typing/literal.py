@@ -2,22 +2,24 @@
 Literal type is only available in python 3.8. We vendor in it's backport from
 https://github.com/python/typing/blob/master/typing_extensions/src_py3/typing_extensions.py
 """
+
 import sys
 import typing
 
-if hasattr(typing, 'Literal'):
+if hasattr(typing, "Literal"):
     Literal = typing.Literal
 elif sys.version_info[:2] >= (3, 7):
-    class _LiteralForm(typing._SpecialForm, _root=True):
 
+    class _LiteralForm(typing._SpecialForm, _root=True):
         def __repr__(self):
-            return 'typing_extensions.' + self._name
+            return "typing_extensions." + self._name
 
         def __getitem__(self, parameters):
             return typing._GenericAlias(self, parameters)
 
-    Literal = _LiteralForm('Literal',
-                           doc="""A type that can be used to indicate to type checkers
+    Literal = _LiteralForm(
+        "Literal",
+        doc="""A type that can be used to indicate to type checkers
                            that the corresponding value has a value literally equivalent
                            to the provided parameter. For example:
                                var: Literal[4] = 4
@@ -25,8 +27,10 @@ elif sys.version_info[:2] >= (3, 7):
                            the value 4 and no other value.
                            Literal[...] cannot be subclassed. There is no runtime
                            checking verifying that the parameter is actually a value
-                           instead of a type.""")
-elif hasattr(typing, '_FinalTypingBase'):
+                           instead of a type.""",
+    )
+elif hasattr(typing, "_FinalTypingBase"):
+
     class _Literal(typing._FinalTypingBase, _root=True):
         """A type that can be used to indicate to type checkers that the
         corresponding value has a value literally equivalent to the
@@ -38,7 +42,7 @@ elif hasattr(typing, '_FinalTypingBase'):
         verifying that the parameter is actually a value instead of a type.
         """
 
-        __slots__ = ('__values__',)
+        __slots__ = ("__values__",)
 
         def __init__(self, values=None, **kwds):
             self.__values__ = values
@@ -49,8 +53,7 @@ elif hasattr(typing, '_FinalTypingBase'):
                 if not isinstance(values, tuple):
                     values = (values,)
                 return cls(values, _root=True)
-            raise TypeError('{} cannot be further subscripted'
-                            .format(cls.__name__[1:]))
+            raise TypeError("{} cannot be further subscripted".format(cls.__name__[1:]))
 
         def _eval_type(self, globalns, localns):
             return self
@@ -58,7 +61,7 @@ elif hasattr(typing, '_FinalTypingBase'):
         def __repr__(self):
             r = super().__repr__()
             if self.__values__ is not None:
-                r += '[{}]'.format(', '.join(map(typing._type_repr, self.__values__)))
+                r += "[{}]".format(", ".join(map(typing._type_repr, self.__values__)))
             return r
 
         def __hash__(self):
@@ -73,6 +76,7 @@ elif hasattr(typing, '_FinalTypingBase'):
 
     Literal = _Literal(_root=True)
 else:
+
     class _LiteralMeta(typing.TypingMeta):
         """Metaclass for Literal"""
 
@@ -91,13 +95,19 @@ else:
         def __getitem__(self, item):
             cls = type(self)
             if self.__values__ is not None:
-                raise TypeError('{} cannot be further subscripted'
-                                .format(cls.__name__[1:]))
+                raise TypeError(
+                    "{} cannot be further subscripted".format(cls.__name__[1:])
+                )
 
             if not isinstance(item, tuple):
                 item = (item,)
-            return cls(self.__name__, self.__bases__,
-                       dict(self.__dict__), values=item, _root=True)
+            return cls(
+                self.__name__,
+                self.__bases__,
+                dict(self.__dict__),
+                values=item,
+                _root=True,
+            )
 
         def _eval_type(self, globalns, localns):
             return self
@@ -105,7 +115,7 @@ else:
         def __repr__(self):
             r = super().__repr__()
             if self.__values__ is not None:
-                r += '[{}]'.format(', '.join(map(typing._type_repr, self.__values__)))
+                r += "[{}]".format(", ".join(map(typing._type_repr, self.__values__)))
             return r
 
         def __hash__(self):

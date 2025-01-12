@@ -11,6 +11,7 @@ class MsvcrtMechanism(FileLockingMechanism):
     """
     A file locking mechanism based on msvcrt.
     """
+
     available = msvcrt is not None
     can_share = False
     can_block = False

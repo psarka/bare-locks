@@ -2,7 +2,7 @@ try:
     from ctypes import cdll
     import fcntl
 
-    libc = cdll.LoadLibrary('libc.so.6')
+    libc = cdll.LoadLibrary("libc.so.6")
     libc_flock = libc.flock
 except (ImportError, OSError, AttributeError):
     libc_flock = None

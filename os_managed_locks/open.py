@@ -6,31 +6,34 @@ try:
 
     # TODO check if on linux >= 3.15
 
-    libc = ctypes.cdll.LoadLibrary('libc.so.6')
+    libc = ctypes.cdll.LoadLibrary("libc.so.6")
     libc_fcntl = libc.fcntl
 
-    type_of_size = {ctypes.sizeof(ctypes.c_short): ctypes.c_short,
-                    ctypes.sizeof(ctypes.c_int): ctypes.c_int,
-                    ctypes.sizeof(ctypes.c_long): ctypes.c_long,
-                    ctypes.sizeof(ctypes.c_longlong): ctypes.c_longlong}
+    type_of_size = {
+        ctypes.sizeof(ctypes.c_short): ctypes.c_short,
+        ctypes.sizeof(ctypes.c_int): ctypes.c_int,
+        ctypes.sizeof(ctypes.c_long): ctypes.c_long,
+        ctypes.sizeof(ctypes.c_longlong): ctypes.c_longlong,
+    }
 
     print(type_of_size)
 
     # TODO handle dict carefully
 
-    off_t = type_of_size[sysconfig.get_config_var('SIZEOF_OFF_T')]
-    pid_t = type_of_size[sysconfig.get_config_var('SIZEOF_PID_T')]
+    off_t = type_of_size[sysconfig.get_config_var("SIZEOF_OFF_T")]
+    pid_t = type_of_size[sysconfig.get_config_var("SIZEOF_PID_T")]
 
     print(off_t)
     print(pid_t)
 
-
     class StructFlock(ctypes.Structure):
-        _fields_ = [('l_type', ctypes.c_short),
-                    ('l_whence', ctypes.c_short),
-                    ('l_start', off_t),
-                    ('l_len', off_t),
-                    ('l_pid', pid_t)]
+        _fields_ = [
+            ("l_type", ctypes.c_short),
+            ("l_whence", ctypes.c_short),
+            ("l_start", off_t),
+            ("l_len", off_t),
+            ("l_pid", pid_t),
+        ]
 
 except (ImportError, OSError, AttributeError):
     libc_fcntl = None
@@ -50,12 +53,14 @@ class OpenMechanism(FileLockingMechanism):
     can_switch = True
 
     @staticmethod
-    def lock(handle,
-             exclusive: bool = True,
-             blocking: bool = False,
-             offset: int = 0,
-             length: int = 0,
-             relative_to: RelativeTo = 'start') -> bool:
+    def lock(
+        handle,
+        exclusive: bool = True,
+        blocking: bool = False,
+        offset: int = 0,
+        length: int = 0,
+        relative_to: RelativeTo = "start",
+    ) -> bool:
         """Acquire a lock on the byte range of the file.
 
         The byte range is computed as
@@ -99,30 +104,30 @@ class OpenMechanism(FileLockingMechanism):
         """
         l_type = fcntl.F_WRLCK if exclusive else fcntl.F_RDLCK
 
-        if relative_to == 'start':
+        if relative_to == "start":
             whence = 0
-        elif relative_to == 'current':
+        elif relative_to == "current":
             whence = 1
-        elif relative_to == 'end':
+        elif relative_to == "end":
             whence = 2
         else:
-            raise ValueError(f"relative_to should be 'start', 'current', or 'end', "
-                             f"received {relative_to}!")
+            raise ValueError(
+                f"relative_to should be 'start', 'current', or 'end', "
+                f"received {relative_to}!"
+            )
 
-        lock_data = StructFlock(l_type=l_type,
-                                l_whence=whence,
-                                l_start=offset,
-                                l_len=length)
+        lock_data = StructFlock(
+            l_type=l_type, l_whence=whence, l_start=offset, l_len=length
+        )
 
         command = F_OFD_SETLKW if blocking else F_OFD_SETLK
 
         return libc_fcntl(handle.fileno(), command, ctypes.pointer(lock_data)) == 0
 
     @staticmethod
-    def unlock(handle,
-               offset: int = 0,
-               length: int = 0,
-               relative_to: RelativeTo = 'start'):
+    def unlock(
+        handle, offset: int = 0, length: int = 0, relative_to: RelativeTo = "start"
+    ):
         """Release a lock on the byte range of the file.
 
         The byte range is computed as
@@ -152,20 +157,21 @@ class OpenMechanism(FileLockingMechanism):
             Can be either 'start' of the file, 'current' position or 'end' of
             the file. (default='start')
         """
-        if relative_to == 'start':
+        if relative_to == "start":
             whence = 0
-        elif relative_to == 'current':
+        elif relative_to == "current":
             whence = 1
-        elif relative_to == 'end':
+        elif relative_to == "end":
             whence = 2
         else:
-            raise ValueError(f"relative_to should be 'start', 'current', or 'end', "
-                             f"received {relative_to}!")
+            raise ValueError(
+                f"relative_to should be 'start', 'current', or 'end', "
+                f"received {relative_to}!"
+            )
 
-        lock_data = StructFlock(l_type=fcntl.F_UNLCK,
-                                l_whence=whence,
-                                l_start=offset,
-                                l_len=length)
+        lock_data = StructFlock(
+            l_type=fcntl.F_UNLCK, l_whence=whence, l_start=offset, l_len=length
+        )
 
         ok = libc_fcntl(handle.fileno(), F_OFD_SETLK, ctypes.pointer(lock_data))
 
