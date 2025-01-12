@@ -1,7 +1,16 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["flit_core >=3.2"]
+build-backend = "flit_core.buildapi"
 
 [project]
-name = "os_managed_locks"
-version = "1.0" 
+name = "os-managed-locks"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
