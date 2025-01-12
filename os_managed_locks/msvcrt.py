@@ -1,5 +1,5 @@
 # msvcrt
-from bare_locks.abstract import FileLockingMechanism
+from os_managed_locks.abstract import FileLockingMechanism
 
 try:
     import msvcrt

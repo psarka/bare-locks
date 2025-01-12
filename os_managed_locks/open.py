@@ -36,8 +36,8 @@ except (ImportError, OSError, AttributeError):
     libc_fcntl = None
     fcntl = None
 
-from bare_locks.abstract import FileLockingMechanism
-from bare_locks.abstract import RelativeTo
+from os_managed_locks.abstract import FileLockingMechanism
+from os_managed_locks.abstract import RelativeTo
 
 F_OFD_SETLK = 37
 F_OFD_SETLKW = 38

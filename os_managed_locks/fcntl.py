@@ -5,8 +5,8 @@ try:
 except ImportError:
     fcntl = None
 
-from bare_locks.abstract import FileLockingMechanism
-from bare_locks.abstract import RelativeTo
+from os_managed_locks.abstract import FileLockingMechanism
+from os_managed_locks.abstract import RelativeTo
 
 
 class FcntlMechanism(FileLockingMechanism):

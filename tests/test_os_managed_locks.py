@@ -4,11 +4,11 @@ import time
 
 import pytest
 
-from bare_locks.fcntl import FcntlMechanism
-from bare_locks.flock import FlockMechanism
-from bare_locks.lock_file_ex import LockFileExMechanism
-from bare_locks.msvcrt import MsvcrtMechanism
-from bare_locks.open import OpenMechanism
+from os_managed_locks.fcntl import FcntlMechanism
+from os_managed_locks.flock import FlockMechanism
+from os_managed_locks.lock_file_ex import LockFileExMechanism
+from os_managed_locks.msvcrt import MsvcrtMechanism
+from os_managed_locks.open import OpenMechanism
 from tests.process_tester import Tester
 
 mechanisms = [FcntlMechanism,
@@ -22,7 +22,7 @@ mechanisms = [FcntlMechanism,
 def test_exclusive_nonblocking_locks_and_unlocks(tmp_path, mechanism):
     with Tester() as t1, Tester() as t2:
         setup = dd(f"""
-        from bare_locks import {mechanism.__name__}
+        from os_managed_locks import {mechanism.__name__}
         handle = open('{tmp_path / 'file'}', 'a+')
         a = {mechanism.__name__}()
         """)
@@ -48,7 +48,7 @@ def test_exclusive_nonblocking_locks_and_unlocks(tmp_path, mechanism):
 def test_releases_exclusive_after_crash(mechanism, tmp_path):
     with Tester() as t1, Tester() as t2:
         setup = dd(f"""
-        from bare_locks import {mechanism.__name__}
+        from os_managed_locks import {mechanism.__name__}
         handle = open('{tmp_path / 'file'}', 'a+')
         a = {mechanism.__name__}()
         """)
@@ -72,7 +72,7 @@ def test_releases_exclusive_after_crash(mechanism, tmp_path):
 def test_exclusive_blocking_blocks(mechanism, tmp_path):
     with Tester() as t1, Tester() as t2:
         setup = dd(f"""
-        from bare_locks import {mechanism.__name__}
+        from os_managed_locks import {mechanism.__name__}
         handle = open('{tmp_path / 'file'}', 'a+')
         a = {mechanism.__name__}()
         """)
@@ -99,7 +99,7 @@ def test_exclusive_blocking_blocks(mechanism, tmp_path):
 def test_exclusive_blocking_acquires_when_available(mechanism, tmp_path):
     with Tester() as t1, Tester() as t2:
         setup = dd(f"""
-        from bare_locks import {mechanism.__name__}
+        from os_managed_locks import {mechanism.__name__}
         handle = open('{tmp_path / 'file'}', 'a+')
         a = {mechanism.__name__}()
         """)
@@ -130,7 +130,7 @@ def test_exclusive_blocking_acquires_when_available(mechanism, tmp_path):
 def test_shared_blocking(mechanism, tmp_path):
     with Tester() as t1, Tester() as t2:
         setup = dd(f"""
-        from bare_locks import {mechanism.__name__}
+        from os_managed_locks import {mechanism.__name__}
         handle = open('{tmp_path / 'file'}', 'a+')
         a = {mechanism.__name__}()
         """)

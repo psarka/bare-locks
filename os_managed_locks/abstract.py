@@ -1,5 +1,5 @@
 """
-Bare locks faithfully and thinly (but sanely!) wraps all
+OS managed locks faithfully and thinly (but sanely!) wraps all
 the available file locking mechanisms. Currently it exposes all the possible
 file locking mechanisms enabled by python standard library, and in the future
 it may include features and mechanisms that are only available through C
@@ -10,7 +10,7 @@ produce a syntactically sweeter locks.
 """
 import abc
 
-from bare_locks.typing.literal import Literal
+from os_managed_locks.typing.literal import Literal
 
 
 class FileLockingMechanism(abc.ABC):

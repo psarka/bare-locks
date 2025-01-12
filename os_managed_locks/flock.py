@@ -8,7 +8,7 @@ except (ImportError, OSError, AttributeError):
     libc_flock = None
     fcntl = None
 
-from bare_locks.abstract import FileLockingMechanism
+from os_managed_locks.abstract import FileLockingMechanism
 
 
 class FlockMechanism(FileLockingMechanism):

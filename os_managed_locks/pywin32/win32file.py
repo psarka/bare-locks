@@ -5,7 +5,7 @@ from ctypes.wintypes import BOOL
 from ctypes.wintypes import DWORD
 from ctypes.wintypes import HANDLE
 
-from bare_locks.pywin32.pywintypes import OVERLAPPED
+from os_managed_locks.pywin32.pywintypes import OVERLAPPED
 
 kernel32 = WinDLL('kernel32', use_last_error=True)
 _ = pointer

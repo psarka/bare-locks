@@ -1,11 +1,11 @@
 try:
     import msvcrt
-    from bare_locks import pywin32
+    from os_managed_locks import pywin32
 except ImportError:
     pywin32 = None
     msvcrt = None
 
-from bare_locks.abstract import FileLockingMechanism
+from os_managed_locks.abstract import FileLockingMechanism
 
 
 class LockFileExMechanism(FileLockingMechanism):
